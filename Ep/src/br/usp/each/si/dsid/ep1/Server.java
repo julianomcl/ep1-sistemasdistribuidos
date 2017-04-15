@@ -5,14 +5,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server implements PartRepository, Part {
 
 	private static String _serverName;
+	private static ConcurrentHashMap<ConcretePart, Integer> _parts;
 
 	public static void main(String args[]) {
 
 		_serverName = args[0];
+		_parts = new ConcurrentHashMap<ConcretePart, Integer>();
 
 		try {
 			Server obj = new Server();
@@ -24,7 +28,7 @@ public class Server implements PartRepository, Part {
 			registry.bind(args[0], stub);
 
 			System.out.println("Server " + _serverName + " ready");
-			
+
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());
 			e.printStackTrace();
@@ -34,24 +38,6 @@ public class Server implements PartRepository, Part {
 	@Override
 	public String sayHello() {
 		return "Connected to " + _serverName;
-	}
-
-	@Override
-	public void addPart(Part part) throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Part findPart(int cod) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ArrayList<Part> getParts() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -88,6 +74,33 @@ public class Server implements PartRepository, Part {
 	public ArrayList<Part> getSubParts() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getInfo() throws RemoteException {
+		return "Server: " + _serverName + "\n" + "Number of Parts: " + _parts.size();
+	}
+
+	@Override
+	public String listP() throws RemoteException {
+		String result = "CODE\t | QUANTITY \n";
+		for (Entry<ConcretePart, Integer> entry : _parts.entrySet()) {
+			result += entry.getKey().getCode() + "\t | " + entry.getValue() + "\n";
+		}
+		return result;
+	}
+
+	@Override
+	public ConcretePart getP(String code) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ConcretePart addP(ConcretePart part) throws RemoteException {
+		part.setCode(_serverName, _parts.size());
+		_parts.put(part, 1);
+		return part;
 	}
 
 }
