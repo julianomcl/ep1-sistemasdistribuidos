@@ -61,7 +61,7 @@ public class Client {
 					continueRunning = false;
 				} else if (command.contains("info")) {
 					info();
-				}else if (command.contains("showlist")){
+				} else if (command.contains("showlist")) {
 					showlist();
 				}
 
@@ -76,11 +76,15 @@ public class Client {
 	}
 
 	private static void showlist() {
-		String result = "\nSUBPARTS CODE | QUANTITY: \n";
-		for (Entry<ConcretePart, Integer> entry : _currentSubPartList.entrySet()) {
-			result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+		if (_currentSubPartList.isEmpty()) {
+			System.out.println("The current subparts list is empty.");
+		} else {
+			String result = "\nSUBPARTS CODE | QUANTITY: \n";
+			for (Entry<ConcretePart, Integer> entry : _currentSubPartList.entrySet()) {
+				result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+			}
+			System.out.println(result);
 		}
-		System.out.println(result);
 	}
 
 	private static void info() throws AccessException, RemoteException, NotBoundException {
