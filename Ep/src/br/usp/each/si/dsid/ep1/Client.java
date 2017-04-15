@@ -5,7 +5,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Currency;
 import java.util.Scanner;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Client {
@@ -24,7 +26,7 @@ public class Client {
 		_host = (args.length < 1) ? null : args[0];
 		_currentSubPartList = new ConcurrentHashMap<ConcretePart, Integer>();
 		_currentPart = new ConcretePart();
-		
+
 		try {
 			_registry = LocateRegistry.getRegistry(_host);
 
@@ -47,16 +49,20 @@ public class Client {
 				} else if (command.contains("clearlist")) {
 					clearList();
 				} else if (command.contains("addsubpart")) {
-					addSubPart(new Scanner(command).nextInt());
+					addSubPart(Integer.parseInt(command.replace("addsubpart ", "").trim()));
 				} else if (command.contains("addp")) {
 					command = command.replace("addp -n ", "");
 					String name = command.split("-d ")[0].trim();
 					String description = command.split("-d ")[1].trim();
-					
+
 					addp(name, description);
-					
+
 				} else if (command.contains("quit")) {
 					continueRunning = false;
+				} else if (command.contains("info")) {
+					info();
+				}else if (command.contains("showlist")){
+					showlist();
 				}
 
 			}
@@ -69,18 +75,34 @@ public class Client {
 		}
 	}
 
+	private static void showlist() {
+		String result = "\nSUBPARTS CODE | QUANTITY: \n";
+		for (Entry<ConcretePart, Integer> entry : _currentSubPartList.entrySet()) {
+			result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+		}
+		System.out.println(result);
+	}
+
+	private static void info() throws AccessException, RemoteException, NotBoundException {
+		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
+		String result = stub.getInfo();
+		System.out.println(result);
+	}
+
 	private static void addSubPart(int quantity) {
+		System.out.println("Adding " + quantity + " units of " + _currentPart.getCode() + " to subpart list.");
 		_currentSubPartList.put(_currentPart, quantity);
 	}
-	
-	private static void addp(String name, String description) throws AccessException, RemoteException, NotBoundException{
+
+	private static void addp(String name, String description)
+			throws AccessException, RemoteException, NotBoundException {
 		_currentPart.setName(name);
 		_currentPart.setDescription(description);
 		_currentPart.setSubParts(_currentSubPartList);
 
 		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
-		_currentPart = stub.addP(_currentPart);
-		System.out.println("Current part is now the created part.\nCode: " + _currentPart.getCode());
+		String code = stub.addP(_currentPart);
+		System.out.println("Part " + code + " added. Current part is now clear again.");
 	}
 
 	private static void clearList() {

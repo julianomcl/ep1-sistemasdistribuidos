@@ -30,7 +30,7 @@ public interface PartRepository extends Remote {
 	 * Add the specified part to the repository
 	 * @return the code of the created part
 	 * */
-	ConcretePart addP(ConcretePart part) throws RemoteException;
+	String addP(ConcretePart part) throws RemoteException;
 	
 	/*Part findPart(String cod) throws RemoteException;
 	ArrayList<Part> getParts() throws RemoteException; */

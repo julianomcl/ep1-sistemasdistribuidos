@@ -92,15 +92,19 @@ public class Server implements PartRepository, Part {
 
 	@Override
 	public ConcretePart getP(String code) throws RemoteException {
-		// TODO Auto-generated method stub
+		for (Entry<ConcretePart, Integer> entry : _parts.entrySet()) {
+			if(entry.getKey().getCode().equals(code)){
+				return entry.getKey();
+			}
+		}
 		return null;
 	}
 
 	@Override
-	public ConcretePart addP(ConcretePart part) throws RemoteException {
+	public String addP(ConcretePart part) throws RemoteException {
 		part.setCode(_serverName, _parts.size());
 		_parts.put(part, 1);
-		return part;
+		return part.getCode();
 	}
 
 }

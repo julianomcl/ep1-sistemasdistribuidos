@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcretePart implements Serializable{
-	
+public class ConcretePart implements Serializable {
+
 	private static final long serialVersionUID = -7056488850145230287L;
 	private String _code;
 	private String _name;
 	private String _description;
 	private ConcurrentHashMap<ConcretePart, Integer> _subParts;
+	private String _serverName;
 
 	public ConcretePart() {
 		this._subParts = new ConcurrentHashMap<ConcretePart, Integer>();
@@ -21,6 +22,7 @@ public class ConcretePart implements Serializable{
 	}
 
 	public void setCode(String serverName, int numberOfParts) {
+		this._serverName = serverName;
 		this._code = serverName + (numberOfParts + 1);
 	}
 
@@ -76,11 +78,18 @@ public class ConcretePart implements Serializable{
 	@Override
 	public String toString() {
 		String result = "CODE: " + _code;
+		result += "\nSERVER: " + _serverName; 
 		result += "\nNAME: " + _name;
 		result += "\nDESCRIPTION: " + _description;
-		result += "\nSUBPARTS CODE | QUANTITY: \n";
-		for (Entry<ConcretePart, Integer> entry : _subParts.entrySet()) {
-			result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+		result += "\nPRIMITIVE: ";
+		if (!isPrimitive()) {
+			result+= "NO";
+			result += "\nSUBPARTS CODE | QUANTITY: \n";
+			for (Entry<ConcretePart, Integer> entry : _subParts.entrySet()) {
+				result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+			}
+		}else{
+			result+="YES\nNO SUBPARTS TO SHOW.\n";
 		}
 		return result;
 	}
