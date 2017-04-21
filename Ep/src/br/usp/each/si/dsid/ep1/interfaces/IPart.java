@@ -1,8 +1,10 @@
-package br.usp.each.si.dsid.ep1;
+package br.usp.each.si.dsid.ep1.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import br.usp.each.si.dsid.ep1.client.Part;
 
 public interface IPart extends Remote {
 	

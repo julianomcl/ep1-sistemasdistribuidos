@@ -1,9 +1,11 @@
-package br.usp.each.si.dsid.ep1;
+package br.usp.each.si.dsid.ep1.client;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import br.usp.each.si.dsid.ep1.interfaces.IPart;
 
 public class Part extends UnicastRemoteObject implements IPart {
 
@@ -17,7 +19,7 @@ public class Part extends UnicastRemoteObject implements IPart {
 	private ConcurrentHashMap<IPart, Integer> _subParts = new ConcurrentHashMap<IPart, Integer>();
 	private String _serverName;
 	
-	protected Part() throws RemoteException {
+	public Part() throws RemoteException {
 		super();
 	}
 	

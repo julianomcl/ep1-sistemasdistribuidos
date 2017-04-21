@@ -1,4 +1,4 @@
-package br.usp.each.si.dsid.ep1;
+package br.usp.each.si.dsid.ep1.client;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -8,6 +8,9 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import br.usp.each.si.dsid.ep1.interfaces.IPart;
+import br.usp.each.si.dsid.ep1.interfaces.IPartRepository;
 
 public class Client {
 
