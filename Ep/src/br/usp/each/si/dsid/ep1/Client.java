@@ -15,8 +15,8 @@ public class Client {
 	private static String _host;
 	private static String _serverName;
 	private static Registry _registry;
-	private static ConcurrentHashMap<ConcretePart, Integer> _currentSubPartList;
-	private static ConcretePart _currentPart;
+	private static ConcurrentHashMap<IPart, Integer> _currentSubPartList;
+	private static IPart _currentPart;
 
 	private Client() {
 
@@ -24,8 +24,8 @@ public class Client {
 
 	public static void main(String[] args) {
 		_host = (args.length < 1) ? null : args[0];
-		_currentSubPartList = new ConcurrentHashMap<ConcretePart, Integer>();
-		_currentPart = new ConcretePart();
+		_currentSubPartList = new ConcurrentHashMap<IPart, Integer>();
+		
 
 		try {
 			_registry = LocateRegistry.getRegistry(_host);
@@ -63,6 +63,8 @@ public class Client {
 					info();
 				} else if (command.contains("showlist")) {
 					showlist();
+				} else if (command.contains("test")) {
+					test();
 				}
 
 			}
@@ -75,37 +77,50 @@ public class Client {
 		}
 	}
 
-	private static void showlist() {
+	private static void test() throws RemoteException, NotBoundException {
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
+		ITeste result = stub.getTeste();
+		System.out.println(result.getNome());
+	}
+
+	private static void showlist() throws RemoteException {
 		if (_currentSubPartList.isEmpty()) {
 			System.out.println("The current subparts list is empty.");
 		} else {
 			String result = "\nSUBPARTS CODE | QUANTITY: \n";
-			for (Entry<ConcretePart, Integer> entry : _currentSubPartList.entrySet()) {
-				result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+			for (Entry<IPart, Integer> entry : _currentSubPartList.entrySet()) {
+				try {
+					result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			System.out.println(result);
 		}
 	}
 
 	private static void info() throws AccessException, RemoteException, NotBoundException {
-		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		String result = stub.getInfo();
 		System.out.println(result);
 	}
 
-	private static void addSubPart(int quantity) {
-		System.out.println("Adding " + quantity + " units of " + _currentPart.getCode() + " to subpart list.");
+	private static void addSubPart(int quantity) throws RemoteException {
+		try {
+			System.out.println("Adding " + quantity + " units of " + _currentPart.getCode() + " to subpart list.");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		_currentSubPartList.put(_currentPart, quantity);
 	}
 
 	private static void addp(String name, String description)
 			throws AccessException, RemoteException, NotBoundException {
-		_currentPart.setName(name);
-		_currentPart.setDescription(description);
-		_currentPart.setSubParts(_currentSubPartList);
 
-		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
-		String code = stub.addP(_currentPart);
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
+		String code = stub.addP(name, description,_currentSubPartList);
 		System.out.println("Part " + code + " added. Current part is now clear again.");
 	}
 
@@ -115,12 +130,17 @@ public class Client {
 	}
 
 	private static void showp() {
-		System.out.println(_currentPart.toString());
+		try {
+			System.out.println(_currentPart.toFormattedString());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void getp(String id) throws AccessException, RemoteException, NotBoundException {
-		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
-		ConcretePart response = stub.getP(id);
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
+		IPart response = stub.getP(id);
 		if (response != null) {
 			_currentPart = response;
 			System.out.println("The current part is " + _currentPart.getCode());
@@ -130,7 +150,7 @@ public class Client {
 	}
 
 	private static void listp() throws AccessException, RemoteException, NotBoundException {
-		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		String response = stub.listP();
 		System.out.println(response);
 	}
@@ -139,7 +159,7 @@ public class Client {
 		_serverName = serverName;
 
 		System.out.println("Binding to " + _serverName);
-		PartRepository stub = (PartRepository) _registry.lookup(_serverName);
+		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		String response = stub.sayHello();
 		System.out.println(response);
 	}

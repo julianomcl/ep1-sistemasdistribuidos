@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Server implements PartRepository, Part {
+public class Server implements IPartRepository {
 
 	private static String _serverName;
-	private static ConcurrentHashMap<ConcretePart, Integer> _parts;
+	private static ConcurrentHashMap<Part, Integer> _parts;
 
 	public static void main(String args[]) {
 
 		_serverName = args[0];
-		_parts = new ConcurrentHashMap<ConcretePart, Integer>();
+		_parts = new ConcurrentHashMap<Part, Integer>();
 
 		try {
 			Server obj = new Server();
-			PartRepository stub = (PartRepository) UnicastRemoteObject.exportObject(obj, 0);
+			IPartRepository stub = (IPartRepository) UnicastRemoteObject.exportObject(obj, 0);
 
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry();
@@ -41,42 +41,6 @@ public class Server implements PartRepository, Part {
 	}
 
 	@Override
-	public void getCod() throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setCod() throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void getName() throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setName() throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addSubPart(Part subPart, int qty) throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public ArrayList<Part> getSubParts() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getInfo() throws RemoteException {
 		return "Server: " + _serverName + "\n" + "Number of Parts: " + _parts.size();
 	}
@@ -84,15 +48,15 @@ public class Server implements PartRepository, Part {
 	@Override
 	public String listP() throws RemoteException {
 		String result = "CODE\t | QUANTITY \n";
-		for (Entry<ConcretePart, Integer> entry : _parts.entrySet()) {
+		for (Entry<Part, Integer> entry : _parts.entrySet()) {
 			result += entry.getKey().getCode() + "\t | " + entry.getValue() + "\n";
 		}
 		return result;
 	}
 
 	@Override
-	public ConcretePart getP(String code) throws RemoteException {
-		for (Entry<ConcretePart, Integer> entry : _parts.entrySet()) {
+	public Part getP(String code) throws RemoteException {
+		for (Entry<Part, Integer> entry : _parts.entrySet()) {
 			if(entry.getKey().getCode().equals(code)){
 				return entry.getKey();
 			}
@@ -101,10 +65,22 @@ public class Server implements PartRepository, Part {
 	}
 
 	@Override
-	public String addP(ConcretePart part) throws RemoteException {
+	public String addP(String name, String description, ConcurrentHashMap<IPart, Integer> subParts) throws RemoteException {
+		Part part = new Part();
 		part.setCode(_serverName, _parts.size());
+		part.setName(name);
+		part.setDescription(description);
+		part.setSubParts(subParts);
+		
 		_parts.put(part, 1);
 		return part.getCode();
+	}
+	
+	@Override
+	public ITeste getTeste() throws RemoteException{
+		ITeste t = new Teste();
+		t.setNome("AAAA");
+		return (ITeste) t;
 	}
 
 }

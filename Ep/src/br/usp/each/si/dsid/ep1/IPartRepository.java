@@ -3,8 +3,9 @@ package br.usp.each.si.dsid.ep1;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface PartRepository extends Remote {
+public interface IPartRepository extends Remote {
 	/**
 	 * @return a message informing to which 
 	 * server the user is connected
@@ -25,12 +26,14 @@ public interface PartRepository extends Remote {
 	 * the specified code
 	 * @param code part code
 	 * */
-	ConcretePart getP(String code) throws RemoteException;
+	IPart getP(String code) throws RemoteException;
 	/**
 	 * Add the specified part to the repository
 	 * @return the code of the created part
 	 * */
-	String addP(ConcretePart part) throws RemoteException;
+	String addP(String name, String description, ConcurrentHashMap<IPart, Integer> subParts) throws RemoteException;
+	
+	ITeste getTeste() throws RemoteException;
 	
 	/*Part findPart(String cod) throws RemoteException;
 	ArrayList<Part> getParts() throws RemoteException; */
