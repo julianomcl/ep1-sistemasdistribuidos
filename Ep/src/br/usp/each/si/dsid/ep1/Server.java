@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,7 +64,7 @@ public class Server implements IPartRepository {
 	}
 
 	@Override
-	public String addP(String name, String description, ConcurrentHashMap<IPart, Integer> subParts) throws RemoteException {
+	public Part addP(String name, String description, ConcurrentHashMap<IPart, Integer> subParts) throws RemoteException {
 		Part part = new Part();
 		part.setCode(_serverName, _parts.size());
 		part.setName(name);
@@ -73,14 +72,7 @@ public class Server implements IPartRepository {
 		part.setSubParts(subParts);
 		
 		_parts.put(part, 1);
-		return part.getCode();
-	}
-	
-	@Override
-	public ITeste getTeste() throws RemoteException{
-		ITeste t = new Teste();
-		t.setNome("AAAA");
-		return (ITeste) t;
+		return part;
 	}
 
 }

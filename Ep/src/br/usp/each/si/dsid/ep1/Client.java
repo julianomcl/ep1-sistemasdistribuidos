@@ -5,7 +5,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Currency;
 import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +25,7 @@ public class Client {
 		_host = (args.length < 1) ? null : args[0];
 		_currentSubPartList = new ConcurrentHashMap<IPart, Integer>();
 		
-
+		System.out.println("Client started.");
 		try {
 			_registry = LocateRegistry.getRegistry(_host);
 
@@ -37,36 +36,46 @@ public class Client {
 
 				// get their input as a String
 				String command = scanner.nextLine();
-
-				if (command.contains("bind")) {
-					bind(command.substring(5).trim());
-				} else if (command.contains("listp")) {
+				
+				String commands[] = command.trim().split(" ");
+				if (commands[0].equals("bind")) {
+					if(commands.length > 1)
+						bind(commands[1]);
+					else
+						System.out.println("Server name not defined.");
+				} else if (commands[0].equals("listp")) {
 					listp();
-				} else if (command.contains("getp")) {
-					getp(command.substring(5).trim());
-				} else if (command.contains("showp")) {
+				} else if (commands[0].equals("getp")) {
+					if(commands.length > 1)
+						getp(commands[1]);
+					else
+						System.out.println("Part code not defined.");
+				} else if (commands[0].equals("showp")) {
 					showp();
-				} else if (command.contains("clearlist")) {
+				} else if (commands[0].equals("clearlist")) {
 					clearList();
-				} else if (command.contains("addsubpart")) {
-					addSubPart(Integer.parseInt(command.replace("addsubpart ", "").trim()));
-				} else if (command.contains("addp")) {
+				} else if (commands[0].equals("addsubpart")) {
+					if(commands.length > 1)
+						addSubPart(Integer.parseInt(commands[1]));
+					else
+						System.out.println("Quantity not defined.");
+				} else if (commands[0].equals("addp")) {
 					command = command.replace("addp -n ", "");
-					String name = command.split("-d ")[0].trim();
-					String description = command.split("-d ")[1].trim();
+					String split[] = command.split("-d ");
+					String name = split[0].trim();
+					String description = (split.length > 1) ? split[1].trim() : "";
 
 					addp(name, description);
 
-				} else if (command.contains("quit")) {
-					continueRunning = false;
-				} else if (command.contains("info")) {
+				} else if (commands[0].equals("info")) {
 					info();
-				} else if (command.contains("showlist")) {
+				} else if (commands[0].equals("showlist")) {
 					showlist();
-				} else if (command.contains("test")) {
-					test();
+				} else if (commands[0].equals("quit")) {
+					continueRunning = false;
+					System.out.println("Bye bye");
 				}
-
+				
 			}
 
 			scanner.close();
@@ -75,12 +84,6 @@ public class Client {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
-	}
-
-	private static void test() throws RemoteException, NotBoundException {
-		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
-		ITeste result = stub.getTeste();
-		System.out.println(result.getNome());
 	}
 
 	private static void showlist() throws RemoteException {
@@ -92,7 +95,6 @@ public class Client {
 				try {
 					result += "\t" + entry.getKey().getCode() + " | " + entry.getValue() + "\n";
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -101,16 +103,23 @@ public class Client {
 	}
 
 	private static void info() throws AccessException, RemoteException, NotBoundException {
+		if(_serverName == null){
+			System.out.println("Connect to a server using command bind");
+			return;
+		}
 		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		String result = stub.getInfo();
 		System.out.println(result);
 	}
 
 	private static void addSubPart(int quantity) throws RemoteException {
+		if(_currentPart == null){
+			System.out.println("Is necessary to add or get a part");
+			return;
+		}
 		try {
 			System.out.println("Adding " + quantity + " units of " + _currentPart.getCode() + " to subpart list.");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		_currentSubPartList.put(_currentPart, quantity);
@@ -118,10 +127,15 @@ public class Client {
 
 	private static void addp(String name, String description)
 			throws AccessException, RemoteException, NotBoundException {
-
+		
+		if(_serverName == null){
+			System.out.println("Connect to a server using command bind");
+			return;
+		}
+		
 		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
-		String code = stub.addP(name, description,_currentSubPartList);
-		System.out.println("Part " + code + " added. Current part is now clear again.");
+		_currentPart = stub.addP(name, description,_currentSubPartList);
+		System.out.println("Part " + _currentPart.getCode() + " added. Current part is now clear again.");
 	}
 
 	private static void clearList() {
@@ -131,14 +145,20 @@ public class Client {
 
 	private static void showp() {
 		try {
-			System.out.println(_currentPart.toFormattedString());
+			if(_currentPart != null)
+				System.out.println(_currentPart.toFormattedString());
+			else
+				System.out.println("Is necessary to add or get a part");
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	private static void getp(String id) throws AccessException, RemoteException, NotBoundException {
+		if(_serverName == null){
+			System.out.println("Connect to a server using command bind");
+			return;
+		}
 		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		IPart response = stub.getP(id);
 		if (response != null) {
@@ -150,6 +170,10 @@ public class Client {
 	}
 
 	private static void listp() throws AccessException, RemoteException, NotBoundException {
+		if(_serverName == null){
+			System.out.println("Connect to a server using command bind");
+			return;
+		}
 		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
 		String response = stub.listP();
 		System.out.println(response);
@@ -158,10 +182,14 @@ public class Client {
 	private static void bind(String serverName) throws RemoteException, NotBoundException {
 		_serverName = serverName;
 
-		System.out.println("Binding to " + _serverName);
-		IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
-		String response = stub.sayHello();
-		System.out.println(response);
+		try {
+			System.out.println("Binding to " + _serverName);
+			IPartRepository stub = (IPartRepository) _registry.lookup(_serverName);
+			String response = stub.sayHello();
+			System.out.println(response);
+		} catch(NotBoundException e) {
+			System.err.println("Server doesn't exist");
+		}
 	}
 
 }
