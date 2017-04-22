@@ -26,9 +26,13 @@ public class GetpCommand extends BaseParsedCommand{
 			return;
 		}
 		
+		//código da peça a ser buscada
 		String partId = parsedLine[1];
 		try {
+			//é feita a conexão ao reposítório de peças
 			IPartRepository stub = (IPartRepository) client.getRegistry().lookup(client.getServerName());
+			//o cliente recebe então a referência de um objeto Part,
+			//identificada pela interface IPart
 			IPart response = stub.getP(partId);
 			if (response != null) {
 				client.setCurrentPart(response);
@@ -37,7 +41,6 @@ public class GetpCommand extends BaseParsedCommand{
 				System.out.println("No part found with the specified code.");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
