@@ -41,6 +41,7 @@ public class Client {
 				
 				// execute the command
 				command.execute();
+				System.out.println();
 			}
 
 			scanner.close();

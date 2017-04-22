@@ -23,9 +23,9 @@ public class AddpCommand extends BaseParsedCommand{
 		String split[] = joined.split("-d ");
 		String name = split[0].trim();
 		String description = (split.length > 1) ? split[1].trim() : "";
-		System.out.println(joined.trim().replace("addp -n ", ""));
+		/*System.out.println(joined.trim().replace("addp -n ", ""));
 		System.out.println(name);
-		System.out.println(description);
+		System.out.println(description);*/
 		
 		try{
 			IPartRepository stub = (IPartRepository) client.getRegistry().lookup(client.getServerName());
