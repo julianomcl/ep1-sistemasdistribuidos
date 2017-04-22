@@ -1,4 +1,4 @@
-package br.usp.each.si.dsid.ep1.interfaces;
+package br.usp.each.si.dsid.ep1.common;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

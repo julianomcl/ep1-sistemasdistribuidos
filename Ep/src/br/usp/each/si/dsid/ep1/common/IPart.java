@@ -1,13 +1,12 @@
-package br.usp.each.si.dsid.ep1.interfaces;
+package br.usp.each.si.dsid.ep1.common;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import br.usp.each.si.dsid.ep1.client.Part;
+import br.usp.each.si.dsid.ep1.server.Part;
 
 public interface IPart extends Remote {
-	
 	public String getCode() throws RemoteException;
 	public void setCode(String serverName, int numberOfParts)  throws RemoteException;
 	public String getName()  throws RemoteException;
@@ -19,5 +18,4 @@ public interface IPart extends Remote {
 	public void setSubParts(ConcurrentHashMap<IPart, Integer> _subParts)  throws RemoteException;
 	public void addSubPart(Part part, Integer quantity)  throws RemoteException;
 	public String toFormattedString() throws RemoteException;
-	
 }

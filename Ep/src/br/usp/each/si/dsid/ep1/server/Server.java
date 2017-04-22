@@ -7,9 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import br.usp.each.si.dsid.ep1.client.Part;
-import br.usp.each.si.dsid.ep1.interfaces.IPart;
-import br.usp.each.si.dsid.ep1.interfaces.IPartRepository;
+import br.usp.each.si.dsid.ep1.common.IPart;
+import br.usp.each.si.dsid.ep1.common.IPartRepository;
 
 public class Server implements IPartRepository {
 
