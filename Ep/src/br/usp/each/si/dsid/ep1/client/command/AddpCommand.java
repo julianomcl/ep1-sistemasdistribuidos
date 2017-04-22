@@ -30,7 +30,7 @@ public class AddpCommand extends BaseParsedCommand{
 		try{
 			IPartRepository stub = (IPartRepository) client.getRegistry().lookup(client.getServerName());
 			client.setCurrentPart(stub.addP(name, description,client.getCurrentSubPartList()));
-			System.out.println("Part " + client.getCurrentPart().getCode() + " added. Current part is now clear again.");
+			System.out.println("Part " + client.getCurrentPart().getCode() + " added. Current part is now " + client.getCurrentPart().getCode());
 		}catch(Exception e){
 			
 		}
