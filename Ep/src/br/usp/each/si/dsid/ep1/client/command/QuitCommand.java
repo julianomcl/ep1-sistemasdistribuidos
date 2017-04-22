@@ -10,6 +10,7 @@ public class QuitCommand extends BaseCommand{
 
 	@Override
 	public void execute() {
+		System.out.println("Bye bye");
 		client.setRunning(false);
 	}
 }
