@@ -1,9 +1,5 @@
 package br.usp.each.si.dsid.ep1.client.command;
 
-import java.rmi.AccessException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-
 import br.usp.each.si.dsid.ep1.client.Client;
 import br.usp.each.si.dsid.ep1.common.IPart;
 import br.usp.each.si.dsid.ep1.common.IPartRepository;
@@ -26,12 +22,12 @@ public class GetpCommand extends BaseParsedCommand{
 			return;
 		}
 		
-		//código da peça a ser buscada
+		//cÃ³digo da peÃ§a a ser buscada
 		String partId = parsedLine[1];
 		try {
-			//é feita a conexão ao reposítório de peças
+			//Ã© feita a conexÃ£o ao repositÃ³rio de peÃ§as
 			IPartRepository stub = (IPartRepository) client.getRegistry().lookup(client.getServerName());
-			//o cliente recebe então a referência de um objeto Part,
+			//o cliente recebe entÃ£o a referÃªncia de um objeto Part,
 			//identificada pela interface IPart
 			IPart response = stub.getP(partId);
 			if (response != null) {

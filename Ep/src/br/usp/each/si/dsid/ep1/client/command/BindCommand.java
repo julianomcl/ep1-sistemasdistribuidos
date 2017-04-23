@@ -38,8 +38,8 @@ class BindCommand extends BaseParsedCommand{
 			//client.getRegistry() - carrega ao registro do java
 			//lookup() - procura pelo nome do servidor informado no comando bind
 			stub = (IPartRepository) client.getRegistry().lookup(client.getServerName());
-			//sayHello() - mÈtodo teste, apenas para indicar que a conex„o foi estabelecida
-			//retorna mensagem do servidor conectaso
+			//sayHello() - m√©todo teste, apenas para indicar que a conex√£o foi estabelecida
+			//retorna mensagem do servidor conectado
 			String response = stub.sayHello();
 			System.out.println(response);
 		} catch(NotBoundException e){

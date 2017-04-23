@@ -16,15 +16,15 @@ public class Server implements IPartRepository {
 	private static ConcurrentHashMap<Part, Integer> _parts;
 
 	public static void main(String args[]) {
-		//O nome que identifica o servidor é recebido pela linha de comando
+		//O nome que identifica o servidor Ã© recebido pela linha de comando
 		_serverName = args[0];
-		//é instanciada a lista de parts do servidor
+		//Ã© instanciada a lista de parts do servidor
 		_parts = new ConcurrentHashMap<Part, Integer>();
 		try {
 			Server obj = new Server();
 			//exportada a referencia do objeto servidor
 			IPartRepository stub = (IPartRepository) UnicastRemoteObject.exportObject(obj, 0);
-			//é feito o bind do objeto do servidor no registro do java
+			//Ã© feito o bind do objeto do servidor no registro do java
 			Registry registry = LocateRegistry.getRegistry();
 			//associado ao objeto o nome do servidor
 			registry.bind(args[0], stub);

@@ -21,7 +21,6 @@ public class ListpCommand extends BaseParsedCommand{
 			String response = stub.listP();
 			System.out.println(response);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

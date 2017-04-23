@@ -35,7 +35,6 @@ public class CommandParser {
 			return new QuitCommand(client);
 		}
 
-		
 		return new NullCommand(client, parsedLine[0]);
 	}
 }
